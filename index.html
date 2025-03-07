@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en" >
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="./style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tourist</title>
+    <link rel="stylesheet" href="web.css">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-straight/css/uicons-regular-straight.css'>
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/4/4d/BlankMap-World.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Gudea&family=Kanit:wght@300&family=Petrona:wght@200;600&display=swap" rel="stylesheet">
+</head>
+<style> 
+    .leaf {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        background-color: #CCCCFF ; /* สีใบไม้ */
+        clip-path: ellipse(50% 50% at 50% 50%);
+        animation: fall 5s linear infinite;
+    }
+    /* สไตล์สำหรับวงกลม */
+    .sparkle {
+        position: absolute;
+        width: 20px;  /* ขนาดวงกลม */
+        height: 20px; /* ขนาดวงกลม */
+        border-radius: 50%;  /* ทำให้เป็นวงกลม */
+        pointer-events: none;
+        animation: sparkle-animation 1s forwards, color-change 8s infinite; /* เอฟเฟกต์วิบวับและการเปลี่ยนสี */
+        opacity: 0;
+    }
+    html {
+    height: 100%;
+    background: -moz-linear-gradient(-45deg, #de437d 0%, #5b44b9 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(-45deg, #de437d 0%,#5b44b9 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(135deg, #de437d 0%,#5b44b9 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#de437d', endColorstr='#5b44b9',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    }
+
+    body {
+    font-family: 'open sans', sans-serif;
+    font-size: 3rem;
+    background-size: cover;
+    height: 100%;
+    }
+
+    svg {
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
+    padding-top: 40px;
+    }
+
+    polyline {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: dash 5s ease-in forwards;
+    animation-iteration-count: 10;
+    animation-direction: alternate;
+    }
+    /* การเคลื่อนไหวของแสงระยิบระยับ */
+    @keyframes sparkle-animation {
+        0% {
+            opacity: 1;
+            transform: scale(0);
+        }
+        50% {
+            opacity: 0.6;
+            transform: scale(1.5);
+        }
+        100% {
+            opacity: 0;
+            transform: scale(2);
+        }
+    }
+    /* การสลับสีของวงกลม (12 สี) */
+    @keyframes color-change {
+        0% {
+            background: #660066; /* เขียว */
+        }
+        5.33% {
+            background: #CC66CC; /* ฟ้า */
+        }
+        8.66% {
+            background: #CCFFFF; /* เหลือง */
+        }
+    }
+    @keyframes fall {
+        0% {
+            top: -50px;
+            opacity: 1;
+            transform: rotate(0deg);
+        }
+        100% {
+            top: 100vh;
+            opacity: 0;
+            transform: rotate(360deg);
+        }
+    }
+    @keyframes dash{
+    to {
+        stroke-dashoffset: 0;
+    }
+    }
+    p {
+    font-size: 2rem;
+    text-align:center;
+    color: #efefef;
+    }
+    .name {
+    font-size: .8rem;
+    font-weight: light;
+    }
+    </style>
+<body>
+<!-- partial:index.partial.html -->
+<div class='title'>
+  <p>Tourist Visiting</p>
+   <p class="name">The number of tourists per year. 2019 - 2024</p>
+</div>
+<center><canvas id="myChart" style="width:100%;max-width:650px"></canvas></center>
+<script>
+    var xValues = ["Singapore 15M", "Japanese 18M", "Switzerland 12M", "USA 80M", "Spain 85M", "Scotland 12M"];
+    var yValues = [6.76, 8.11, 5.41, 36, 38.2, 5.41];  // ใช้เปอร์เซ็นต์ที่กำหนด
+    var barColors = [
+      "#FF0000",
+      "#FF9999",
+      "#FFFFFF",
+      "#3300CC",
+      "#FF9900",
+      "#66CCFF"
+    ];
+    
+    new Chart("myChart", {
+      type: "pie",
+      data: {
+        labels: xValues,
+        datasets: [{
+          backgroundColor: barColors,
+          data: yValues
+        }]
+      },
+      options: {
+        title: {
+          display: true,
+          text: "จำนวนนักท่องเที่ยวในปี 2024 โดยเฉลี่ย จาก 222 ล้านคน",
+          fontColor: "#FFFFFF"  // ทำให้ตัวหนังสือของ title เป็นสีขาว
+        },
+        legend: {
+          labels: {
+            fontColor: "#FFFFFF"  // ทำให้ label ของ legend เป็นสีขาว
+          }
+        },
+        plugins: {
+          datalabels: {
+            color: '#FFFFFF',  // สีของตัวเลขในวงกลม
+            font: {
+              weight: 'bold',  // ทำให้ตัวเลขหนา
+              size: 14          // ขนาดของตัวเลข
+            },
+            formatter: function(value, context) {
+              return value.toFixed(2) + '%';  // แสดงเปอร์เซ็นต์จากข้อมูลที่ให้ไว้
+            }
+          }
+        }
+      }
+    });
+    </script>   
+<svg class='container' width="1000px" height="506px" viewBox="30 27 529 286" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs></defs>
+    <g id="graph-copy" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(30.000000, 27.000000)">
+        <g id="y_axis" font-size="14.0833333" font-family=".HelveticaNeueDeskInterface-Regular, .Helvetica Neue DeskInterface" fill="#FFFFFF" opacity="0.4" font-weight="normal">
+            <text id="0">
+                <tspan x="25.3008249" y="264.333333">0</tspan>
+            </text>
+            <text id="1m">
+                <tspan x="12.7757572" y="232.666667">1m</tspan>
+            </text>
+            <text id="5m">
+                <tspan x="12.7757572" y="201">5m</tspan>
+            </text>
+            <text id="10m">
+                <tspan x="12.7757572" y="169.333333">10m</tspan>
+            </text>
+            <text id="15m">
+                <tspan x="12.7757572" y="137.666667">15m</tspan>
+            </text>
+            <text id="20m">
+                <tspan x="6.51322328" y="106">20m</tspan>
+            </text>
+            <text id="25m">
+                <tspan x="6.51322328" y="74.3333333">25m</tspan>
+            </text>
+            <text id="30m">
+                <tspan x="6.51322328" y="42.6666667">30m</tspan>
+            </text>
+            <text id="80m">
+                <tspan x="6.51322328" y="11">80m</tspan>
+            </text>
+        </g>
+        <g id="GRAPHS" transform="translate(64.000000, 16.000000)" stroke-linecap="round" stroke-width="4" stroke-linejoin="round">
+            <polyline id="Singapore" stroke="#FF0000" points="3.04739336 93 100.985782 200 175.170616 235 255.189573 172 330.947867 147 415.990521 117 471.990521 117 "></polyline>
+            <polyline id="Japanese" stroke="#FF9999" points="2.04739336 22 100.2559242 188 175.2274882 240 255.080569 200 330.018438 177 415.680361 117 471.990521 107 "></polyline>
+            <polyline id="Switzerland" stroke="#FFFFFF" points="2.04739336 90 100.273159 190 175.2985782 180 255.175355 160 330.077488 147 471.990521 142 471.990521 142"></polyline>
+            <polyline id="USA" stroke="#3300CC" points="2.04739336 0 100.273159 85 175.2985782 80 255.175355 10 330.077488 5 441.990521 -5 471.990521 -8"></polyline>
+            <polyline id="Spain" stroke="#FF9900" points="2.04739336 -15 100.273159 92 175.2985782 22 255.175355 -2 330.077488 -15 471.990521 -15 471.990521 -20"></polyline>
+            <polyline id="Scotland" stroke="#66CCFF" points="2.04739336 110 100.273159 200 175.2985782 195 255.175355 160 330.077488 155 415.990521 135 471.990521 132"></polyline>
+        </g>
+        <g id="x_axis" transform="translate(71.974046, 271.541667)" font-size="11.0833333" font-family=".HelveticaNeueDeskInterface-Regular, .Helvetica Neue DeskInterface" fill="#FFFFFF" opacity="0.4" font-weight="normal">
+            <text id="1">
+                <tspan x="0.396183206" y="11">2019</tspan>
+            </text>
+            <text id="2">
+                <tspan x="39.2603361" y="11"></tspan>
+            </text>
+            <text id="3">
+                <tspan x="78.8786567" y="11">2020</tspan>
+            </text>
+            <text id="4">
+                <tspan x="118.496977" y="11"></tspan>
+            </text>
+            <text id="5">
+                <tspan x="158.115298" y="11">2021</tspan>
+            </text>
+            <text id="6">
+                <tspan x="197.733619" y="11"></tspan>
+            </text>
+            <text id="7">
+                <tspan x="237.351939" y="11">2022</tspan>
+            </text>
+            <text id="8">
+                <tspan x="276.97026" y="11"></tspan>
+            </text>
+            <text id="9">
+                <tspan x="316.58858" y="11">2023</tspan>
+            </text>
+            <text id="10">
+                <tspan x="359.229833" y="11"></tspan>
+            </text>
+            <text id="11">
+                <tspan x="400.036703" y="11">2024</tspan>
+            </text>
+            <text id="12">
+                <tspan x="438.466474" y="11"></tspan>
+            </text>
+        </g>
+        <g id="grid" transform="translate(46.618321, 4.750000)" stroke="#FFFFFF" stroke-linecap="square" opacity="0.0800000057">
+            <path d="M0.396183206,1.1875 L478.991396,1.1875" id="Line"></path>
+            <path d="M0.396183206,32.8541667 L478.991396,32.8541667" id="Line"></path>
+            <path d="M0.396183206,64.5208333 L478.991396,64.5208333" id="Line"></path>
+            <path d="M0.396183206,96.1875 L478.991396,96.1875" id="Line"></path>
+            <path d="M0.396183206,127.854167 L478.991396,127.854167" id="Line"></path>
+            <path d="M0.396183206,159.520833 L478.991396,159.520833" id="Line"></path>
+            <path d="M0.396183206,191.1875 L478.991396,191.1875" id="Line"></path>
+            <path d="M0.396183206,222.854167 L478.991396,222.854167" id="Line"></path>
+            <path d="M0.396183206,254.520833 L478.991396,254.520833" id="Line"></path>
+        </g>
+    </g>
+</svg>
+<!-- partial -->
+<script>
+    // ฟังก์ชันเพื่อสร้างใบไม้ร่วง
+    function createLeaf() {
+        const leaf = document.createElement('div');
+        leaf.classList.add('leaf');
+
+        // ตั้งค่าตำแหน่งเริ่มต้นของใบไม้
+        const xPosition = Math.random() * window.innerWidth; // ตำแหน่งเริ่มต้นแบบสุ่ม
+        leaf.style.left = `${xPosition}px`;
+
+        // ตั้งค่าความเร็วและระยะเวลาของการเคลื่อนไหว
+        const fallDuration = Math.random() * 3 + 3; // ระยะเวลาร่วง (3-6 วินาที)
+        leaf.style.animationDuration = `${fallDuration}s`;
+
+        // เพิ่มใบไม้ลงในหน้าจอ
+        document.body.appendChild(leaf);
+
+        // ลบใบไม้หลังจากตกลงถึงพื้น
+        setTimeout(() => {
+            leaf.remove();
+        }, fallDuration * 1000);
+    }
+
+    // สร้างใบไม้ใหม่ทุกๆ 300 มิลลิวินาที
+    setInterval(createLeaf, 200);
+</script>
+<script>
+    // ฟังก์ชันสร้างแสงระยิบระยับวงกลมเมื่อเมาส์เคลื่อนที่
+    document.addEventListener('mousemove', (e) => {
+        // สร้าง div สำหรับแสงระยิบระยับวงกลม
+        const sparkle = document.createElement('div');
+        sparkle.classList.add('sparkle');
+
+        // กำหนดตำแหน่งให้แสงระยิบระยับอยู่ที่ตำแหน่งเมาส์
+        sparkle.style.left = `${e.pageX - 20}px`;  // ลบ 20px เพื่อให้ตรงกลางแสงอยู่ที่เมาส์
+        sparkle.style.top = `${e.pageY - 20}px`;
+
+        // เพิ่มแสงลงในหน้าจอ
+        document.body.appendChild(sparkle);
+
+        // ลบแสงออกจาก DOM หลังจากเคลื่อนไหวเสร็จ
+        setTimeout(() => {
+            sparkle.remove();
+        }, 1000); // ระยะเวลา 1 วินาที (ตามความยาวของแอนิเมชัน)
+    });
+</script> 
+  
+</body>
+</html>
